@@ -19,7 +19,7 @@ const sessionSchema = new mongoose.Schema(
     },
     valid: {
       type: Boolean,
-      required: true,
+      default: true,
     },
     userAgent: {
       type: String,

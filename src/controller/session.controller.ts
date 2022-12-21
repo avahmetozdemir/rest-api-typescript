@@ -13,11 +13,26 @@ export async function createUserSessionHandler(req: Request, res: Response) {
   const session = await createSession(user._id, req.get("user-agent") || "");
   //create an access token
 
+  const time = config
+    .get<string>("accessTokenTtl")
+    .split(String.raw`\n`)
+    .join("\n");
+
   const accessToken = signJwt(
     { ...user, session: session._id },
-    { expiresIn: config.get("accessTokenTtl") }
+    {
+      expiresIn: time,
+    }
   );
 
   //create a refresh token
+  const refreshToken = signJwt(
+    { ...user, session: session._id },
+    {
+      expiresIn: time,
+    }
+  );
   //return access and refresh token
+
+  return res.send({ accessToken, refreshToken });
 }
